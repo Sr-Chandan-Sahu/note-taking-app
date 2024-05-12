@@ -1,104 +1,111 @@
-import React, { useState } from 'react';
-import { Input, Button, InputLabel, FormControl } from '@mui/material';
-import { Link,useNavigate} from 'react-router-dom';
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import {Link} from 'react-router-dom';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+function Copyright(props: any) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <a color="inherit" href="#">
+        Note Taking app
+      </a>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
-const LoginUser = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  
-  const navigate=useNavigate();
-  const validateEmail = (email:string) => {
-    if (!email) {
-      return 'Email is required';
-    }
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-      return 'Invalid email format';
-    }
-    return '';
+// TODO remove, this demo shouldn't need to reset the theme.
+const defaultTheme = createTheme();
+
+export default function LoginUser() {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
   };
-
-  const validatePassword = (password:string) => {
-    if (!password) {
-      return 'Password is required';
-    }
-    return '';
-  };
-
-//   const handleEmailChange = (e) => {
-//     const { value } = e.target;
-//     const error = validateEmail(value);
-//     setEmail(value);
-//     setEmailError(error);
-//   };
-
-//   const handlePasswordChange = (e) => {
-//     const { value } = e.target;
-//     const error = validatePassword(value);
-//     setPassword(value);
-//     setPasswordError(error);
-//   };
-
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-
-//     const emailError = validateEmail(email);
-//     const passwordError = validatePassword(password);
-
-//     setEmailError(emailError);
-//     setPasswordError(passwordError);
-
-//     if (!emailError && !passwordError) {
-      
-//     //   const user = usersData.users.find((user) => user.email === email && user.password === password);
-      
-//     //   if (user) {
-//     //     alert("User logged in successfully")
-//     //     navigate('/home-page')
-//     //   } else {
-//     //     alert('Invalid email or password');
-//     //   }
-//     // }
-//   };
-  
 
   return (
-    <div className="container">
-      <h1 style={{ fontWeight: 'bold', fontSize: '25px', textAlign: 'center' }}>Welcome Back!</h1>
-      <div style={{ marginTop: '5px', padding: '10px' }}>
-        <FormControl fullWidth variant="standard">
-          <InputLabel>Email</InputLabel>
-          <Input type="email" value={email}  />
-          {emailError && <div style={{ color: 'red', marginTop: '5px' }}>{emailError}</div>}
-        </FormControl>
-      </div>
-      <div style={{ marginTop: '5px', padding: '10px' }}>
-        <FormControl fullWidth variant="standard">
-          <InputLabel>Password</InputLabel>
-          <Input type="password" value={password}  />
-          {passwordError && <div style={{ color: 'red', marginTop: '5px' }}>{passwordError}</div>}
-        </FormControl>
-      </div>
-      <div style={{marginTop: '3px', marginLeft: '8px'}}>
-        <Link to="/forgot-password" style={{ color: 'blue' }}>
-          Forgot password?
-        </Link>
-      </div>
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <Button variant="contained" >
-          Login
-        </Button>
-      </div>
-      <div style={{ marginTop: '7px', fontSize: '20px', margin: '20px 20px'  }}>
-        Don't have an account?{' '}
-        <Link style={{ textDecoration: 'underline', color: 'blue' }} to="/sign-up">
-          Sign Up
-        </Link>
-      </div>
-    </div>
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link to="forgot-password">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link to='sign-up' >
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
   );
-};
-
-export default LoginUser;
+}

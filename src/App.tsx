@@ -7,7 +7,7 @@ import SignupUser from './components/SignupUser';
 function App() {
   return (
     <Routes>
-      <Route path='/' element={<LoginUser/>}/>
+      <Route path='/sign-in' element={<LoginUser/>}/>
       <Route path='/sign-up' element={<SignupUser/>}/>
     </Routes>
   );
