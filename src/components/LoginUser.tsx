@@ -13,18 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <a color="inherit" href="#">
-        Note Taking app
-      </a>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -92,19 +81,19 @@ export default function LoginUser() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link to="forgot-password">
+                <Link to="/forgot-password">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link to='sign-up' >
+                <Link to='/sign-up' >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+       
       </Container>
     </ThemeProvider>
   );
