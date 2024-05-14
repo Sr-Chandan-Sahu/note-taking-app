@@ -83,7 +83,7 @@ const ForgotPassword: React.FC = () => {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link to="/sign-in">Remember your password? Sign in</Link>
+                  <Link to="/">Remember your password? Sign in</Link>
                 </Grid>
               </Grid>
             </Box>
