@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Container, Grid } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, Grid, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import NoteCard from './NoteCard';
+import NoteDialog from './NoteDialog';
+import { useNavigate } from 'react-router-dom';
 
 interface Note {
   id: number;
@@ -9,14 +12,39 @@ interface Note {
 }
 
 const HomePage: React.FC = () => {
-  const [notes, setNotes] = useState<Note[]>([
-    { id: 1, title: 'First Note', content: 'This is the content of the first note' },
-    { id: 2, title: 'Second Note', content: 'This is the content of the second note' },
-  ]);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Handle logout functionality
-    console.log('User logged out');
+    alert("Logged out Successfully");
+    navigate('/');
+  };
+
+  const handleAddNote = () => {
+    setNoteToEdit(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleEditNote = (id: number) => {
+    const note = notes.find(note => note.id === id);
+    if (note) {
+      setNoteToEdit(note);
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleDeleteNote = (id: number) => {
+    setNotes(notes.filter(note => note.id !== id));
+  };
+
+  const handleSaveNote = (title: string, content: string, id?: number) => {
+    if (id) {
+      setNotes(notes.map(note => (note.id === id ? { id, title, content } : note)));
+    } else {
+      setNotes([...notes, { id: Date.now(), title, content }]);
+    }
   };
 
   return (
@@ -26,7 +54,16 @@ const HomePage: React.FC = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Note Taking App
           </Typography>
-          <Button color="inherit" onClick={handleLogout}>
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            sx={{
+              '&:hover': {
+                backgroundColor: 'red',
+                color: 'white',
+              },
+            }}
+          >
             Logout
           </Button>
         </Toolbar>
@@ -35,11 +72,31 @@ const HomePage: React.FC = () => {
         <Grid container spacing={2}>
           {notes.map((note) => (
             <Grid item xs={12} md={6} lg={4} key={note.id}>
-              <NoteCard title={note.title} content={note.content} />
+              <NoteCard
+                id={note.id}
+                title={note.title}
+                content={note.content}
+                onEdit={handleEditNote}
+                onDelete={handleDeleteNote}
+              />
             </Grid>
           ))}
         </Grid>
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={handleAddNote}
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        >
+          <AddIcon />
+        </Fab>
       </Container>
+      <NoteDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSave={handleSaveNote}
+        noteToEdit={noteToEdit || undefined}
+      />
     </>
   );
 };
