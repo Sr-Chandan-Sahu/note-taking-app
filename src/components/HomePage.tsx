@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Container, Grid, Fab } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, Grid, Fab, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import NoteCard from './NoteCard';
 import NoteDialog from './NoteDialog';
@@ -15,6 +15,7 @@ const HomePage: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -47,6 +48,15 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredNotes = notes.filter(note =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <AppBar position="static">
@@ -54,6 +64,14 @@ const HomePage: React.FC = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Note Taking App
           </Typography>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search notes"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            sx={{ backgroundColor: 'white', borderRadius: 1, marginRight: 2 }}
+          />
           <Button
             color="inherit"
             onClick={handleLogout}
@@ -70,7 +88,7 @@ const HomePage: React.FC = () => {
       </AppBar>
       <Container sx={{ marginTop: 4 }}>
         <Grid container spacing={2}>
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <Grid item xs={12} md={6} lg={4} key={note.id}>
               <NoteCard
                 id={note.id}
