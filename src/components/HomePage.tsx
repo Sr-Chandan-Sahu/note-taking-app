@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, Container, Grid, Fab, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import NoteCard from './NoteCard';
@@ -18,8 +18,15 @@ const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem('isLoggedIn');
+    if (loggedInStatus !== 'true') {
+      navigate('/');
+    }
+  }, [navigate]);
+
   const handleLogout = () => {
-    alert("Logged out Successfully");
+    localStorage.setItem('isLoggedIn', 'false');
     navigate('/');
   };
 

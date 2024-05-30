@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -19,13 +19,19 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 const defaultTheme = createTheme();
 
 const LoginUser: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    if (email === 'chandan@gmail.com' && password === 'chandan123') {
+      localStorage.setItem('isLoggedIn', 'true');
+      navigate('/home');
+    } else {
+      setError('Invalid email or password');
+    }
   };
 
   return (
@@ -56,6 +62,8 @@ const LoginUser: React.FC = () => {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -66,7 +74,14 @@ const LoginUser: React.FC = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -84,7 +99,7 @@ const LoginUser: React.FC = () => {
                 <Link to="/forgot-password">Forgot password?</Link>
               </Grid>
               <Grid item>
-                <Link to="/sign-up">Don't have an account? Sign Up</Link>
+                {/* <Link to="/sign-up">Don't have an account? Sign Up</Link> */}
               </Grid>
             </Grid>
           </Box>
