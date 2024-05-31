@@ -94,19 +94,46 @@ const HomePage: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Container sx={{ marginTop: 4 }}>
-        <Grid container spacing={2}>
-          {filteredNotes.map((note) => (
-            <Grid item xs={12} md={6} lg={4} key={note.id}>
-              <NoteCard
-                id={note.id}
-                title={note.title}
-                content={note.content}
-                onEdit={handleEditNote}
-                onDelete={handleDeleteNote}
-              />
+        {filteredNotes.length === 0 ? (
+          <Typography 
+            variant="h6" 
+            align="center" 
+            sx={{ 
+              fontWeight: 'bold', 
+              fontSize: '1.5rem', 
+              marginTop: 4 
+            }}
+          >
+            No notes available. Click the add button to create a new note.
+          </Typography>
+        ) : (
+          <>
+            <Typography 
+              variant="h6" 
+              align="center" 
+              sx={{ 
+                fontWeight: 'bold', 
+                fontSize: '1.5rem', 
+                marginBottom: 4 
+              }}
+            >
+              Here are your notes:
+            </Typography>
+            <Grid container spacing={2}>
+              {filteredNotes.map((note) => (
+                <Grid item xs={12} md={6} lg={4} key={note.id}>
+                  <NoteCard
+                    id={note.id}
+                    title={note.title}
+                    content={note.content}
+                    onEdit={handleEditNote}
+                    onDelete={handleDeleteNote}
+                  />
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
+          </>
+        )}
         <Fab
           color="primary"
           aria-label="add"
