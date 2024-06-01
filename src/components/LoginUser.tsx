@@ -82,10 +82,7 @@ const LoginUser: React.FC = () => {
                 {error}
               </Typography>
             )}
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            
             <Button
               type="submit"
               fullWidth
@@ -96,7 +93,7 @@ const LoginUser: React.FC = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link to="/forgot-password">Forgot password?</Link>
+                {/* <Link to="/forgot-password">Forgot password?</Link> */}
               </Grid>
               <Grid item>
                 {/* <Link to="/sign-up">Don't have an account? Sign Up</Link> */}

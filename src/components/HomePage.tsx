@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Button, Container, Grid, Fab, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Container, Grid, Fab, TextField, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import NoteCard from './NoteCard';
 import NoteDialog from './NoteDialog';
@@ -9,21 +10,21 @@ interface Note {
   id: number;
   title: string;
   content: string;
+  isDeleted: boolean;
 }
 
-const HomePage: React.FC = () => {
-  const [notes, setNotes] = useState<Note[]>([]);
+interface HomePageProps {
+  notes: Note[];
+  onAddNote: (title: string, content: string, id?: number) => void;
+  onDeleteNote: (id: number) => void;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ notes, onAddNote, onDeleteNote }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const loggedInStatus = localStorage.getItem('isLoggedIn');
-    if (loggedInStatus !== 'true') {
-      navigate('/');
-    }
-  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.setItem('isLoggedIn', 'false');
@@ -43,16 +44,9 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleDeleteNote = (id: number) => {
-    setNotes(notes.filter(note => note.id !== id));
-  };
-
   const handleSaveNote = (title: string, content: string, id?: number) => {
-    if (id) {
-      setNotes(notes.map(note => (note.id === id ? { id, title, content } : note)));
-    } else {
-      setNotes([...notes, { id: Date.now(), title, content }]);
-    }
+    onAddNote(title, content, id);
+    setIsDialogOpen(false);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,14 +54,18 @@ const HomePage: React.FC = () => {
   };
 
   const filteredNotes = notes.filter(note =>
-    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+    !note.isDeleted &&
+    (note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
     <>
       <AppBar position="static">
         <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setDrawerOpen(true)}>
+            <MenuIcon />
+          </IconButton>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Note Taking App
           </Typography>
@@ -93,6 +91,16 @@ const HomePage: React.FC = () => {
           </Button>
         </Toolbar>
       </AppBar>
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <List>
+          <ListItem button onClick={() => navigate('/home')}>
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem button onClick={() => navigate('/trash')}>
+            <ListItemText primary="Trash" />
+          </ListItem>
+        </List>
+      </Drawer>
       <Container sx={{ marginTop: 4 }}>
         {filteredNotes.length === 0 ? (
           <Typography 
@@ -127,7 +135,7 @@ const HomePage: React.FC = () => {
                     title={note.title}
                     content={note.content}
                     onEdit={handleEditNote}
-                    onDelete={handleDeleteNote}
+                    onDelete={onDeleteNote}
                   />
                 </Grid>
               ))}
