@@ -26,7 +26,7 @@ const LoginUser: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (email === 'chandan@gmail.com' && password === 'chandan123') {
+    if (email === 'test@gmail.com' && password === 'Test1234') {
       localStorage.setItem('isLoggedIn', 'true');
       navigate('/home');
     } else {
